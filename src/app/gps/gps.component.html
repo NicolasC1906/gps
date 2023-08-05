@@ -1,0 +1,14 @@
+<div class="gps-container">
+    <div class="gps-info">
+      <p>Tiempo: {{ timingService.timeElapsed * 1000 | date:'mm:ss' }}</p>
+      <p>Latitud actual: {{ currentLatitude }}</p>
+      <p>Longitud actual: {{ currentLongitude }}</p>
+      <p>Punto de inicio: {{ timingService.startPoint?.latitude }}, {{ timingService.startPoint?.longitude }}</p>
+      <p>Punto final: {{ timingService.endPoint?.latitude }}, {{ timingService.endPoint?.longitude }}</p>
+    </div>
+    <button (click)="setStartPoint()" [disabled]="timingService.startPoint">Establecer inicio</button>
+    <button (click)="setEndPoint()" [disabled]="!timingService.startPoint || timingService.endPoint">Establecer final</button>
+    <button (click)="reset()">Reiniciar</button>
+    <div class="gps-map"></div> <!-- Aquí se encuentra el mapa -->
+  </div>
+  
