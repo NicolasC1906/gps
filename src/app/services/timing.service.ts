@@ -10,10 +10,11 @@ export class TimingService {
   private startTime: number = 0;
   private endTime: number = 0;
   public timeElapsed: number = 0;
-
-  constructor(private locationService: LocationService) {}
-
   private interval: any; // Para almacenar el intervalo
+
+  constructor(private locationService: LocationService) {
+    this.loadFromLocalStorage();
+  }
 
   setStartPoint(latitude: number, longitude: number) {
     this.startPoint = {latitude, longitude};
@@ -22,6 +23,8 @@ export class TimingService {
     this.interval = setInterval(() => {
       this.timeElapsed = (Date.now() - this.startTime) / 1000; // Actualiza cada segundo
     }, 1000);
+
+    this.saveToLocalStorage();
   }
 
   setEndPoint(latitude: number, longitude: number) {
@@ -29,6 +32,8 @@ export class TimingService {
     clearInterval(this.interval); // Detiene el intervalo cuando se establece el punto final
     this.endTime = Date.now();
     this.timeElapsed = (this.endTime - this.startTime) / 1000;
+
+    this.saveToLocalStorage();
   }
 
   reset() {
@@ -38,5 +43,29 @@ export class TimingService {
     this.startTime = 0;
     this.endTime = 0;
     this.timeElapsed = 0;
+    localStorage.removeItem('timingData');
+  }
+
+  private saveToLocalStorage() {
+    const data = {
+      startPoint: this.startPoint,
+      endPoint: this.endPoint,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      timeElapsed: this.timeElapsed
+    };
+    localStorage.setItem('timingData', JSON.stringify(data));
+  }
+
+  private loadFromLocalStorage() {
+    const dataString = localStorage.getItem('timingData');
+    if (dataString) {
+      const data = JSON.parse(dataString);
+      this.startPoint = data.startPoint;
+      this.endPoint = data.endPoint;
+      this.startTime = data.startTime;
+      this.endTime = data.endTime;
+      this.timeElapsed = data.timeElapsed;
+    }
   }
 }
